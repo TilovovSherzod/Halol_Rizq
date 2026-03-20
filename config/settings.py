@@ -80,11 +80,30 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database configuration
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}
+USE_SQLITE = config('USE_SQLITE', default=False, cast=bool)
+
+# Database configuration
+# If USE_SQLITE is set to True in environment, force SQLite regardless of DB_ENGINE.
+# Otherwise, if DB_ENGINE is explicitly set to Postgres, use Postgres; fallback to SQLite.
+if config('DB_ENGINE', default='') == 'django.db.backends.postgresql' and not USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': config('DB_ENGINE'),
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT', cast=int),
+        }
+    }
+else:
+    # Use SQLite (either forced by USE_SQLITE or as a safe fallback)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -232,4 +251,4 @@ LOGGING = {
         },
     },
 }
-print("DB_NAME:", config('DB_NAME'))
+print("DB_NAME:", config('DB_NAME', default='(not set)'))
