@@ -14,12 +14,12 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='127.0.0.1,localhost,halol-rizq-1.onrender.com'
+    default='halol-rizq-1.onrender.com,halol-rizq.uz,www.halol-rizq.uz'
 ).split(',')
 
 CSRF_TRUSTED_ORIGINS = config(
     'CSRF_TRUSTED_ORIGINS',
-    default='https://halol-rizq-1.onrender.com'
+    default='https://halol-rizq-1.onrender.com,https://halol-rizq.uz,https://www.halol-rizq.uz'
 ).split(',')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
